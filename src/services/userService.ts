@@ -1,7 +1,18 @@
 import { serviceCommon } from "./serviceCommon";
 
-const login = async (username: string, password: string) => {
+export interface ILogin {
+    username: string
+    password: string
+}
 
+export interface IUser{
+    id: string,
+    username: string,
+    token: string
+}
+
+const login = async (loginData: ILogin) => {
+    const {username,password} = loginData
     const requestOptions = {
         method: "POST",
         headers: { 'Content-Type': 'application/json' },
@@ -10,11 +21,15 @@ const login = async (username: string, password: string) => {
 
     return fetch(`/users/authenticate`, requestOptions)
         .then(serviceCommon.handleResponse)
-        .then(user => {
+        .then((user: IUser) => {
             localStorage.setItem('user', JSON.stringify(user));
 
             return user;
         });
+}
+
+const logout = () => {
+    localStorage.removeItem('user');
 }
 
 const getUser = () => {
@@ -37,7 +52,9 @@ export const userService = {
     login,
     getToken,
     getUser,
-    getUserData
+    getUserData,
+    logout
 };
+
 
 

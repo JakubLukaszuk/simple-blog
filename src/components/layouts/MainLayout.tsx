@@ -1,11 +1,11 @@
-import React, { ReactNode, useEffect,  } from 'react';
+import React, { ReactNode } from 'react';
 
 
 interface IMainLayoutProps {
     children: ReactNode
 }
 
-const MainLatout: React.FC<IMainLayoutProps> = (props) => {
+const MainLayout: React.FC<IMainLayoutProps> = (props) => {
     const { children } = props;
 
     return (
@@ -15,4 +15,4 @@ const MainLatout: React.FC<IMainLayoutProps> = (props) => {
     )
 }
 
-export default MainLatout
+export default MainLayout

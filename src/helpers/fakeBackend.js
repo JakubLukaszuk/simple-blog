@@ -24,10 +24,6 @@ export function configureFakeBackend() {
         return opts.headers && opts.headers.Authorization === TOKEN_VAL
     }
 
-    const handlePagination =(array, startInde, endIndex) => {
-
-    }
-
     const validate = (dataToValdate, dataType) => {
         const validaitonResult = {
             isValid: true,
@@ -85,7 +81,6 @@ export function configureFakeBackend() {
     window.fetch = function (url, opts) {
         return new Promise((resolve, reject) => {
             setTimeout(() => {
-
                 // authenticate
                 if (url.endsWith('/users/authenticate') && opts.method === 'POST') {
                     let params = JSON.parse(opts.body);
@@ -108,7 +103,6 @@ export function configureFakeBackend() {
                     } else {
                         reject('Username or password is incorrect');
                     }
-
                     return;
                 }
 
@@ -135,12 +129,12 @@ export function configureFakeBackend() {
                     // respond 200 OK
                     resolve({
                         statusCode: 200,
-                        data: newPost
+                        data: posts
                     });
 
                     return;
                 }
-                //modifyPost
+                //updatePost
                 if (url.endsWith('/posts') && opts.method === 'PUT') {
 
                     if (!isUserAuth(opts)) {
@@ -162,20 +156,17 @@ export function configureFakeBackend() {
                         return
                     }
 
-                    let modifedPost;
-                    const foundIndex = posts.findIndex((post => post.id == newPost.id))
+                    const foundIndex = posts.findIndex((post => post.id === newPost.id))
 
-                    modifedPost={
+                    posts[foundIndex] = {
                         ...posts[foundIndex],
                         text: newPost.text
-                    }
-
-                    posts[foundIndex] = modifedPost;
+                    };
 
                     localStorage.setItem('posts', JSON.stringify(posts));
                     resolve({
                         statusCode: 200,
-                        data: modifedPost
+                        data: posts
                     });
                     return;
                 }
@@ -206,6 +197,7 @@ export function configureFakeBackend() {
 
                     resolve({
                         statusCode: 200,
+                        data: {deletedPostId: id}
                     });
                     return;
                 }
