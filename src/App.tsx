@@ -1,57 +1,36 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import logo from './logo.svg';
-import { Counter } from './features/counter/Counter';
+import {userService} from './services/userService';
 import './App.css';
+import { configureFakeBackend } from './helpers/fakeBackend';
+import { postService } from './services/postService';
 
-function App() {
+const App = () => {
+  configureFakeBackend();
+  useEffect(() => {
+    async function testService() {
+      const user= await userService.login('user', '123');
+      console.log(user);
+      const addedPost = await postService.addPost('test1');
+      const addedPost2 = await postService.addPost('test2');
+      const addedPost3 = await postService.addPost('test3');
+      console.log(addedPost);
+      const comment = await postService.addComment({text: "comment", username: "user2", postId: addedPost.id});
+      const comments = await postService.getCommentsInRange(0, 4, addedPost.id);
+      console.log(comments);
+      addedPost.text="xxxxxxx";
+      const modifedPost = await postService.modifyPost(addedPost);
+      console.log(modifedPost);
+      const posts = await postService.getPostsInRange(0,4);
+      console.log(posts);
+      postService.deletePost(addedPost.id);
+      postService.deletePost(addedPost2.id);
+      postService.deletePost(addedPost3.id);
+    }
+
+  }, [])
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <Counter />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <span>
-          <span>Learn </span>
-          <a
-            className="App-link"
-            href="https://reactjs.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux-toolkit.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux Toolkit
-          </a>
-          ,<span> and </span>
-          <a
-            className="App-link"
-            href="https://react-redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React Redux
-          </a>
-        </span>
-      </header>
-    </div>
+    <div>App</div>
   );
 }
 
