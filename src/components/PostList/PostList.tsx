@@ -18,7 +18,7 @@ const PostList =()=> {
         <section>
             {isLoading? "Loading...":
                 <ul>
-                    {posts.map(post=> {<PostItem post={post} key={post.id}/>})}
+                    {posts.map(post=> (<PostItem post={post} key={post.id}/>))}
                 </ul>
             }
             <div>

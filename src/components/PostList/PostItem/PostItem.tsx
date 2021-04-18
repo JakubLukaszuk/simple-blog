@@ -22,8 +22,8 @@ const PostItem: React.FC<IPostItem> = (props) => {
       ) : (
         <React.Fragment>
           <h2>{title}</h2>
-          {isContentVisible? <PostContent text={text} title={title} addingNewPost={false}/>: null}
-          <BaseButton>show</BaseButton>
+          {isContentVisible? <PostContent text={text} />: null}
+          <BaseButton onClick={toggleContentVisibility}>Show</BaseButton>
         </React.Fragment>
       )}
     </li>
