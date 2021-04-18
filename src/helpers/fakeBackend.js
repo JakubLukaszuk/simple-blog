@@ -89,20 +89,23 @@ export function configureFakeBackend() {
                         return user.username === params.username && user.password === params.password;
                     });
 
-                    if (filteredUsers.length) {
-                        let user = filteredUsers[0];
-                        let response = {
-                            id: user.id,
-                            username: user.username,
-                            token: TOKEN_VAL
-                        };
-                        resolve({
-                            statusCode: 200,
-                            data: response
+                    if (!filteredUsers.length) {
+                        reject({
+                            statusCode: 404,
+                            error: 'Username or password is incorrect'
                         });
-                    } else {
-                        reject('Username or password is incorrect');
+                        return
                     }
+                    let user = filteredUsers[0];
+                    let response = {
+                        id: user.id,
+                        username: user.username,
+                        token: TOKEN_VAL
+                    };
+                    resolve({
+                        statusCode: 200,
+                        data: response
+                    });
                     return;
                 }
 
@@ -110,7 +113,10 @@ export function configureFakeBackend() {
                 if (url.endsWith('/posts') && opts.method === 'POST') {
 
                     if (!isUserAuth(opts)) {
-                        reject('Unauthorized');
+                        reject({
+                            statusCode: 401,
+                            error: 'Unauthorized'
+                        });
                         return;
                     }
 
@@ -122,7 +128,7 @@ export function configureFakeBackend() {
                     }
 
                     newPost.id = posts.length ? Math.max(...posts.map(post => post.id)) + 1 : 1;
-                    newPost.additionDate =(new Date()).toJSON();
+                    newPost.additionDate = (new Date()).toJSON();
                     posts.unshift(newPost);
                     localStorage.setItem('posts', JSON.stringify(posts));
 
@@ -138,7 +144,10 @@ export function configureFakeBackend() {
                 if (url.endsWith('/posts') && opts.method === 'PUT') {
 
                     if (!isUserAuth(opts)) {
-                        reject('Unauthorized');
+                        reject({
+                            statusCode: 401,
+                            error: 'Unauthorized'
+                        });
                         return;
                     }
 
@@ -147,13 +156,19 @@ export function configureFakeBackend() {
 
                     const idValidationResult = validate(newPost.id, VALIDATION_DATA_TYPES.POST_ID)
                     if (!idValidationResult.isValid) {
-                        reject(idValidationResult.message);
+                        reject({
+                            statusCode: 404,
+                            error: idValidationResult.message
+                        });
                         return
                     }
 
                     const validationDataResult = validate(newPost, VALIDATION_DATA_TYPES.POST_DATA);
                     if (!validationDataResult.isValid) {
-                        reject(validationDataResult.message);
+                        reject({
+                            statusCode: 404,
+                            error: validationDataResult.message
+                        });
                         return
                     }
 
@@ -176,7 +191,10 @@ export function configureFakeBackend() {
                 //deletePost
                 if (url.endsWith('/posts') && opts.method === 'DELETE') {
                     if (!isUserAuth(opts)) {
-                        reject('Unauthorized');
+                        reject({
+                            statusCode: 401,
+                            error: 'Unauthorized'
+                        });
                         return;
                     }
 
@@ -189,7 +207,7 @@ export function configureFakeBackend() {
                     }
 
                     const filtredPosts = posts.filter((post) => post.id !== id);
-                    filtredPosts.sort((a, b) => new Date(a.additionDate) -new Date(b.additionDate));
+                    filtredPosts.sort((a, b) => new Date(a.additionDate) - new Date(b.additionDate));
                     posts = filtredPosts;
 
                     console.log(comments[id]);
@@ -202,7 +220,9 @@ export function configureFakeBackend() {
 
                     resolve({
                         statusCode: 200,
-                        data: {deletedPostId: id}
+                        data: {
+                            deletedPostId: id
+                        }
                     });
                     return;
                 }
@@ -215,13 +235,16 @@ export function configureFakeBackend() {
                     let endIndex = parseInt(urlParts[urlParts.length - 1]);
 
                     if (startIndex % 1 != 0 || endIndex % 1 != 0) {
-                        reject('wrong indexes');
+                        reject({
+                            statusCode: 404,
+                            error: 'wrong indexes'
+                        });
                     }
 
                     const postsInRange = posts.slice(startIndex, endIndex);
 
                     resolve({
-                        ok: true,
+                        statusCode: 200,
                         data: postsInRange
                     });
 
@@ -239,12 +262,18 @@ export function configureFakeBackend() {
                     }
 
                     if (!comment.text) {
-                        reject('Comment text is empty');
+                        reject({
+                            statusCode: 403,
+                            error: 'Comment text is empty'
+                        });
                         return;
                     }
 
                     if (!comment.username) {
-                        reject('Comment text is empty');
+                        reject({
+                            statusCode: 403,
+                            error: 'Comment text is empty'
+                        });
                         return;
                     }
 
@@ -279,7 +308,10 @@ export function configureFakeBackend() {
 
                 const idValidationResult = validate(postId, VALIDATION_DATA_TYPES.POST_ID)
                 if (!idValidationResult.isValid) {
-                    reject(idValidationResult.message);
+                    reject({
+                        statusCode: 403,
+                        error: idValidationResult.message
+                    });
                     return
                 }
 
@@ -287,8 +319,11 @@ export function configureFakeBackend() {
                 let startIndex = parseInt(urlParts[urlParts.length - 2]);
                 let endIndex = parseInt(urlParts[urlParts.length - 1]);
 
-                if (startIndex % 1 != 0 || endIndex % 1 != 0) {
-                    reject('wrong indexes');
+                if (startIndex % 1 !== 0 || endIndex % 1 !== 0) {
+                    reject({
+                        statusCode: 404,
+                        error: 'wrong indexes'
+                    });
                 }
 
                 const commentsInRange = comments[postId]?.slice(startIndex, endIndex);

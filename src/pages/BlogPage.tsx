@@ -9,7 +9,7 @@ import { RootState } from "../store";
 
 const BlogPage = () => {
   const [isAddPost, setIsAddPost] = useState(false);
-  const { isLoggedIn, isLoggingIn } = useSelector(
+  const { isLoggedIn, isLoggingIn, error } = useSelector(
     (state: RootState) => state.user
   );
 
@@ -19,6 +19,7 @@ const BlogPage = () => {
 
   return (
     <div>
+      {error? <span>{error.error}</span> : null}
       {isLoggedIn && !isLoggingIn?
           <section>
             {!isAddPost ? <BaseButton onClick={toggleIsAddPost}>Add new Post</BaseButton>: null}

@@ -3,16 +3,17 @@ import { userService } from '../services/userService';
 // import { isAuthenticated } from '../services/user.service';
 import {  RootState } from '../store';
 import { ILogin, IUser } from '../services/userService';
+import { IError } from './common';
 
 interface IAuthState {
     isLoggedIn: boolean;
     isLoggingIn: boolean;
     user: any
-    error: any | null;
+    error: IError | undefined;
 }
 
 
-export const loginUser = createAsyncThunk<IUser, ILogin, { rejectValue: string }>
+export const loginUser = createAsyncThunk<IUser, ILogin, { rejectValue: IError }>
     ('users/login', async (loginData, { rejectWithValue }) => {
         try {
             const { username, password } = loginData;
@@ -20,7 +21,7 @@ export const loginUser = createAsyncThunk<IUser, ILogin, { rejectValue: string }
             return response
         }
         catch (err) {
-            throw err;
+            return rejectWithValue(err);
         }
     })
 
@@ -30,7 +31,7 @@ const initialState: IAuthState = {
     isLoggedIn: user ? true : false,
     isLoggingIn: false,
     user: user,
-    error: null,
+    error: undefined,
 }
 
 export const userSlice = createSlice({
@@ -39,13 +40,13 @@ export const userSlice = createSlice({
     reducers: {
 
         errorCleanup: (state) => {
-            state.error = null;
+            state.error = undefined;
         },
         logout: (state) => {
             userService.logout();
             state.isLoggedIn = false;
             state.user = null;
-            state.error = null;
+            state.error = undefined;
         },
 
     },
@@ -61,6 +62,7 @@ export const userSlice = createSlice({
             state.isLoggedIn = true;
         })
         builder.addCase(loginUser.rejected, (state, { payload }) => {
+            debugger
             state.isLoggingIn = false;
             state.isLoggedIn = false;
             state.error = payload;

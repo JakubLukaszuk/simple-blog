@@ -14,7 +14,7 @@ interface IComments {
 
 const Comments: React.FC<IComments> = (props) => {
   const { postId } = props;
-  const { comments, areCommetsLoading } = useSelector(
+  const { comments, areCommetsLoading, commentsError } = useSelector(
     (state: RootState) => state.post
   );
 
@@ -33,8 +33,10 @@ const Comments: React.FC<IComments> = (props) => {
 
   return (
     <section>
+      <h3>Comments</h3>
       <NewComment postId={postId} />
       <ul>
+      {commentsError? <span>{commentsError.error}</span> : null}
         {areCommetsLoading
           ? "Loading"
           : comments[postId]?.map((postComment, index) => (

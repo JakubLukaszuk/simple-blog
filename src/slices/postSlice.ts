@@ -1,18 +1,19 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { IAddPost, IDeletePost, IDeltedPost, IUpdatePost, IPost, postService, IGetPostsInRange, IGetCommentsInRange, IComment, IAddComent } from '../services/postService';
+import { IError } from './common';
 
 export interface IEnchencedPost extends IPost {
-    error: string | undefined;
+    error: IError | undefined;
     isLoading: boolean;
 }
 
 interface IPostsState {
     posts: Array<IEnchencedPost>;
-    isLoading: boolean;
-    error: any;
-    areCommetsLoading: boolean,
-    commentsError: string | undefined
-    addCommentsError: string | undefined,
+    isLoading: boolean
+    error: IError | undefined
+    areCommetsLoading: boolean
+    commentsError: IError | undefined
+    addCommentsError: IError | undefined
     comments:Array<Array<IComment>>
 }
 
@@ -38,7 +39,7 @@ const handlePostsArrayResponse = (response: IPost[] | undefined) =>{
     return echnacedPosts;
 }
 
-export const getPostsInRange = createAsyncThunk<Array<IEnchencedPost>, IGetPostsInRange, { rejectValue: string }>
+export const getPostsInRange = createAsyncThunk<Array<IEnchencedPost>, IGetPostsInRange, { rejectValue: IError }>
     ('post/get', async (userName) => {
         try {
             const response = await postService.getPostsInRange(userName);
@@ -50,7 +51,7 @@ export const getPostsInRange = createAsyncThunk<Array<IEnchencedPost>, IGetPosts
         }
     });
 
-export const addPost = createAsyncThunk<Array<IEnchencedPost>, IAddPost, { rejectValue: string }>
+export const addPost = createAsyncThunk<Array<IEnchencedPost>, IAddPost, { rejectValue: IError }>
     ('post/add', async (postToAdd) => {
         try {
             const response = await postService.addPost(postToAdd);
@@ -61,7 +62,7 @@ export const addPost = createAsyncThunk<Array<IEnchencedPost>, IAddPost, { rejec
             throw err;
         }
     });
-export const deletePost = createAsyncThunk<IDeltedPost, IDeletePost, { rejectValue: string }>
+export const deletePost = createAsyncThunk<IDeltedPost, IDeletePost, { rejectValue: IError }>
     ('post/delete', async (postToDelete) => {
         try {
             const response = await postService.deletePost(postToDelete);
@@ -75,7 +76,7 @@ export const deletePost = createAsyncThunk<IDeltedPost, IDeletePost, { rejectVal
         }
     });
 
-    export const updatePost = createAsyncThunk<Array<IEnchencedPost>, IUpdatePost, { rejectValue: string }>
+    export const updatePost = createAsyncThunk<Array<IEnchencedPost>, IUpdatePost, { rejectValue: IError }>
     ('post/update', async (postToAdd) => {
         try {
             const response = await postService.updatePost(postToAdd);
@@ -87,7 +88,7 @@ export const deletePost = createAsyncThunk<IDeltedPost, IDeletePost, { rejectVal
         }
     });
 
-    export const addComment = createAsyncThunk<Array<IComment>, IAddComent, { rejectValue: string }>
+    export const addComment = createAsyncThunk<Array<IComment>, IAddComent, { rejectValue: IError }>
     ('post/comments/add', async (commentToAdd) => {
         try {
             const commets = await postService.addComment(commentToAdd);
@@ -98,7 +99,7 @@ export const deletePost = createAsyncThunk<IDeltedPost, IDeletePost, { rejectVal
         }
     });
 
-    export const getCommentsInRange = createAsyncThunk<Array<IComment>, IGetCommentsInRange, { rejectValue: string }>
+    export const getCommentsInRange = createAsyncThunk<Array<IComment>, IGetCommentsInRange, { rejectValue: IError }>
     ('post/comments/get', async (commentToAdd) => {
         try {
             const commets = await postService.getCommentsInRange(commentToAdd);
@@ -135,10 +136,9 @@ export const postSlice = createSlice({
             state.isLoading = false;
             state.posts = payload;
         });
-        builder.addCase(getPostsInRange.rejected, (state, action) => {
+        builder.addCase(getPostsInRange.rejected, (state, {payload}) => {
             state.isLoading = false;
-            console.log(action.error);
-            state.error = 'error'
+            state.error = payload
         });
 
 
@@ -149,10 +149,10 @@ export const postSlice = createSlice({
             state.isLoading = false;
             state.posts.push(...payload);
         });
-        builder.addCase(addPost.rejected, (state, action) => {
+        builder.addCase(addPost.rejected, (state, {payload}) => {
             state.isLoading = false;
             //action.error
-            state.error = 'error';
+            state.error = payload;
         });
 
 
@@ -175,7 +175,7 @@ export const postSlice = createSlice({
                 if(post.id === id)
                 {
                     post.isLoading = false;
-                    post.error = 'error'
+                    post.error = action.payload
                 }
                 return post;
             })
@@ -207,7 +207,7 @@ export const postSlice = createSlice({
                 if(post.id === id)
                 {
                     post.isLoading = false;
-                    post.error = 'error';
+                    post.error = action.payload;
                 }
                 return post;
             })
@@ -224,7 +224,7 @@ export const postSlice = createSlice({
             state.comments.push(action.payload);
         });
         builder.addCase(getCommentsInRange.rejected, (state, action) => {
-            state.commentsError = action.error.message;
+            state.commentsError = action.payload;
             state.areCommetsLoading= false;
         });
 
@@ -239,7 +239,7 @@ export const postSlice = createSlice({
             state.comments.splice(action.meta.arg.postId, 0, action.payload)
         });
         builder.addCase(addComment.rejected, (state, action) => {
-            state.addCommentsError = action.error.message;
+            state.addCommentsError = action.payload;
             state.areCommetsLoading= false;
         });
 
