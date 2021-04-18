@@ -4,7 +4,7 @@ import { userService } from "./userService";
 export interface IUpdatePost {
     id: number;
     text: string;
-    username: string;
+    title: string;
 }
 export interface IComment {
     postId: number

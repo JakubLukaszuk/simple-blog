@@ -1,10 +1,5 @@
-import { AnyAction } from "@reduxjs/toolkit";
-import { title } from "process";
 import React, { useState } from "react";
-import { IAddPost } from "../../../../services/postService";
-import { useAppDispatch } from "../../../../store";
-import { BaseButton } from "../../../UI/BaseButton/BaseButton";
-import TextField from "../../../UI/TextField/TextField";
+import { useSelector } from "react-redux";
 
 interface IPostContent {
   text?: string;

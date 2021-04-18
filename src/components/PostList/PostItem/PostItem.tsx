@@ -1,5 +1,8 @@
 import React, { useState } from "react";
-import { IEnchencedPost } from "../../../slices/postSlice";
+import { useSelector } from "react-redux";
+import { deletePost, IEnchencedPost, updatePost } from "../../../slices/postSlice";
+import { RootState } from "../../../store";
+import HandlePost from "../../NewPost/HandlePost";
 import { BaseButton } from "../../UI/BaseButton/BaseButton";
 import PostContent from "./PostContent/PostContent";
 
@@ -10,10 +13,19 @@ interface IPostItem{
 const PostItem: React.FC<IPostItem> = (props) => {
   const { id, isLoading, text, title } = props.post;
   const [isContentVisible, setIsContentVisible] = useState(false);
+  const [isEditPost, setIsEditPost] = useState(false);
+
+  const { isLoggedIn } = useSelector(
+    (state: RootState) => state.user
+  );
 
   const toggleContentVisibility = () => {
     setIsContentVisible(!isContentVisible);
   };
+
+  const toggleIsEditPost = () => {
+    setIsEditPost(!isEditPost);
+  }
 
   return (
     <li>
@@ -23,7 +35,9 @@ const PostItem: React.FC<IPostItem> = (props) => {
         <React.Fragment>
           <h2>{title}</h2>
           {isContentVisible? <PostContent text={text} />: null}
-          <BaseButton onClick={toggleContentVisibility}>Show</BaseButton>
+          {isEditPost && isContentVisible ?  null : <BaseButton onClick={toggleContentVisibility}>Show</BaseButton>}
+          {isLoggedIn && !isEditPost ? <BaseButton onClick={toggleIsEditPost}>Edit Post</BaseButton> : null }
+          {isLoggedIn && isEditPost ? <HandlePost unmount={toggleIsEditPost} isEditPost={true} deletePost={deletePost} postId={id} updatePost={updatePost} text={text} title={title}/> : null }
         </React.Fragment>
       )}
     </li>

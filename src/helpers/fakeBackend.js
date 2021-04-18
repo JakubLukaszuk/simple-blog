@@ -122,7 +122,7 @@ export function configureFakeBackend() {
                     }
 
                     newPost.id = posts.length ? Math.max(...posts.map(post => post.id)) + 1 : 1;
-                    newPost.additionDate = new Date();
+                    newPost.additionDate =(new Date()).toJSON();
                     posts.unshift(newPost);
                     localStorage.setItem('posts', JSON.stringify(posts));
 
@@ -143,6 +143,7 @@ export function configureFakeBackend() {
                     }
 
                     let newPost = JSON.parse(opts.body);
+                    newPost.username = "user";
 
                     const idValidationResult = validate(newPost.id, VALIDATION_DATA_TYPES.POST_ID)
                     if (!idValidationResult.isValid) {
@@ -160,7 +161,8 @@ export function configureFakeBackend() {
 
                     posts[foundIndex] = {
                         ...posts[foundIndex],
-                        text: newPost.text
+                        text: newPost.text,
+                        title: newPost.title
                     };
 
                     localStorage.setItem('posts', JSON.stringify(posts));
@@ -187,7 +189,7 @@ export function configureFakeBackend() {
                     }
 
                     const filtredPosts = posts.filter((post) => post.id !== id);
-                    filtredPosts.sort((a, b) => a.additionDate - b.additionDate);
+                    filtredPosts.sort((a, b) => new Date(a.additionDate) -new Date(b.additionDate));
                     posts = filtredPosts;
 
                     delete comments[id]

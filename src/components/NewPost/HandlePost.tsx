@@ -1,21 +1,35 @@
 import React, { useState } from "react";
-import { IAddPost, IGetPostsInRange, IUpdatePost } from "../../services/postService";
+import {
+  IAddPost,
+  IDeletePost,
+  IUpdatePost,
+} from "../../services/postService";
 import { useAppDispatch } from "../../store";
 import { BaseButton } from "../UI/BaseButton/BaseButton";
 import TextField from "../UI/TextField/TextField";
 
-interface INewPost {
-  sendPost?: (args: IAddPost) => any
-  updatePost?: (args: IUpdatePost) => any
+interface HandlePost {
+  sendPost?: (args: IAddPost) => any;
+  updatePost?: (args: IUpdatePost) => any;
+  deletePost?: (args: IDeletePost) => any;
   unmount: () => void;
-  text?: string,
-  title?: string,
-  isUpdatePost: boolean
+  text?: string;
+  title?: string;
+  postId?: number;
+  isEditPost: boolean;
 }
 
-
-const NewPost: React.FC<INewPost> = (props) => {
-  const { sendPost, unmount, isUpdatePost, text="", title="" } = props;
+const NewPost: React.FC<HandlePost> = (props) => {
+  const {
+    sendPost,
+    unmount,
+    isEditPost,
+    text = "",
+    title = "",
+    deletePost,
+    updatePost,
+    postId,
+  } = props;
   const [postTitle, setPostTitle] = useState(text);
   const [postText, setPostText] = useState(title);
 
@@ -23,30 +37,49 @@ const NewPost: React.FC<INewPost> = (props) => {
 
   const subbmitForm = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (!isUpdatePost && sendPost)
-    {
+    if (!isEditPost && sendPost) {
       dispatch(
         sendPost({
           title: postTitle,
-          text: postText,
+          text: postText
         })
-      ).then(
-        ()=> unmount()
-      )
+      ).then(() => unmount());
+      return;
+    }
+    if(isEditPost && postId && updatePost)
+    {
+      dispatch(
+        updatePost({
+          id: postId,
+          title: postTitle,
+          text: postText
+        })
+      ).then(() => unmount());
+      return;
     }
   };
 
-  const close = () =>{
+  const close = () => {
     unmount();
-  }
+  };
 
   return (
     <section>
       <form onSubmit={subbmitForm}>
         <TextField value={postTitle} onChange={setPostTitle} />
         <TextField value={postText} onChange={setPostText} textarea={true} />
-        <BaseButton type="submit">Post</BaseButton>
-        <BaseButton onClick={close}>Cancel</BaseButton>
+        <div>
+          <BaseButton type="submit">
+            {isEditPost ? "Update" : "Post"}
+          </BaseButton>
+          {isEditPost && deletePost && postId ? (
+            <BaseButton
+              onClick={() => dispatch(deletePost({ postId: postId }))}>
+                Delete Post
+            </BaseButton>
+          ) : null}
+          <BaseButton onClick={close}>Cancel</BaseButton>
+        </div>
       </form>
     </section>
   );

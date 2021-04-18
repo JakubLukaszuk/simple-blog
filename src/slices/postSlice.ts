@@ -12,30 +12,30 @@ interface IPostsState {
     error: any;
 }
 
-const echnaceTasks = (posts: Array<IPost>) => {
-    const enchancedTasks
+const echnacePost = (posts: Array<IPost>) => {
+    const echnacedPosts
         = posts.map(post => {
-            const enchancedTask: IEnchencedPost = {
+            const enchancedPost: IEnchencedPost = {
                 ...post,
                 isLoading: false,
                 error: undefined
             };
-            return enchancedTask;
+            return enchancedPost;
         });
 
-    return enchancedTasks;
+    return echnacedPosts;
 };
 
 const handlePostsArrayResponse = (response: IPost[] | undefined) =>{
     if (!response?.length) {
         return new Array(0);
     }
-    const echnacedTasks = echnaceTasks(response);
-    return echnacedTasks;
+    const echnacedPosts = echnacePost(response);
+    return echnacedPosts;
 }
 
 export const getPostsInRange = createAsyncThunk<Array<IEnchencedPost>, IGetPostsInRange, { rejectValue: string }>
-    ('tasks/get', async (userName) => {
+    ('post/get', async (userName) => {
         try {
             const response = await postService.getPostsInRange(userName);
             const enchancedPosts = handlePostsArrayResponse(response);
@@ -47,9 +47,9 @@ export const getPostsInRange = createAsyncThunk<Array<IEnchencedPost>, IGetPosts
     });
 
 export const addPost = createAsyncThunk<Array<IEnchencedPost>, IAddPost, { rejectValue: string }>
-    ('tasks/add', async (taskToAdd) => {
+    ('post/add', async (postToAdd) => {
         try {
-            const response = await postService.addPost(taskToAdd);
+            const response = await postService.addPost(postToAdd);
             const enchancedPosts = handlePostsArrayResponse(response);
             return enchancedPosts;
         }
@@ -58,9 +58,9 @@ export const addPost = createAsyncThunk<Array<IEnchencedPost>, IAddPost, { rejec
         }
     });
 export const deletePost = createAsyncThunk<IDeltedPost, IDeletePost, { rejectValue: string }>
-    ('tasks/delete', async (taskToDelete) => {
+    ('post/delete', async (postToDelete) => {
         try {
-            const response = await postService.deletePost(taskToDelete);
+            const response = await postService.deletePost(postToDelete);
             if (!response?.deletedPostId) {
                 throw Error();
             }
@@ -71,12 +71,12 @@ export const deletePost = createAsyncThunk<IDeltedPost, IDeletePost, { rejectVal
         }
     });
 
-    export const updateTask = createAsyncThunk<Array<IEnchencedPost>, IUpdatePost, { rejectValue: string }>
-    ('tasks/update', async (taskToAdd) => {
+    export const updatePost = createAsyncThunk<Array<IEnchencedPost>, IUpdatePost, { rejectValue: string }>
+    ('post/update', async (postToAdd) => {
         try {
-            const response = await postService.updatePost(taskToAdd);
-            const enchancedTasks = handlePostsArrayResponse(response);
-            return enchancedTasks;
+            const response = await postService.updatePost(postToAdd);
+            const enchancedPosts = handlePostsArrayResponse(response);
+            return enchancedPosts;
         }
         catch (err) {
             throw err;
@@ -89,8 +89,8 @@ const initialState: IPostsState = {
     error: undefined
 };
 
-export const taskSlice = createSlice({
-    name: 'task',
+export const postSlice = createSlice({
+    name: 'post',
     initialState,
     reducers: {
 
@@ -135,7 +135,7 @@ export const taskSlice = createSlice({
             })
         });
         builder.addCase(deletePost.fulfilled, (state, { payload }) => {
-            state.posts = state.posts.filter( taskItem => taskItem.id !== payload.deletedPostId);
+            state.posts = state.posts.filter( post => post.id !== payload.deletedPostId);
         });
         builder.addCase(deletePost.rejected, (state, action) => {
             const id = action.meta.arg.postId
@@ -150,17 +150,17 @@ export const taskSlice = createSlice({
         });
 
 
-        builder.addCase(updateTask.pending, (state, action) => {
+        builder.addCase(updatePost.pending, (state, action) => {
             const id = action.meta.arg.id
-            state.posts = state.posts.map(taskItem => {
-                if(taskItem.id === id)
+            state.posts = state.posts.map(post => {
+                if(post.id === id)
                 {
-                    taskItem.isLoading = true;
+                    post.isLoading = true;
                 }
-                return taskItem;
+                return post;
             })
         });
-        builder.addCase(updateTask.fulfilled, (state, action) => {
+        builder.addCase(updatePost.fulfilled, (state, action) => {
             state.posts = state.posts.map((post, index) => {
                 if(post.id === action.payload[0].id)
                 {
@@ -169,7 +169,7 @@ export const taskSlice = createSlice({
                 return post;
             })
         });
-        builder.addCase(updateTask.rejected, (state, action) => {
+        builder.addCase(updatePost.rejected, (state, action) => {
             const id = action.meta.arg.id
             state.posts = state.posts.map(posst => {
                 if(posst.id === id)
@@ -184,4 +184,4 @@ export const taskSlice = createSlice({
     }
 });
 
-export default taskSlice.reducer;
+export default postSlice.reducer;

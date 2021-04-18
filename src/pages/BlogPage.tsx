@@ -22,7 +22,7 @@ const BlogPage = () => {
       {isLoggedIn && !isLoggingIn?
           <section>
             {!isAddPost ? <BaseButton onClick={toggleIsAddPost}>Add new Post</BaseButton>: null}
-            {isAddPost? <HandlePost sendPost={addPost} unmount={toggleIsAddPost} isUpdatePost={false}/>: null}
+            {isAddPost? <HandlePost sendPost={addPost} unmount={toggleIsAddPost} isEditPost={false}/>: null}
           </section>
         : null
       }
