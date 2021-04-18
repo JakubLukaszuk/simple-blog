@@ -1,0 +1,11 @@
+.PostList
+{
+    background-color: var(--backGroundColor);
+    padding: 20px;
+    border: 1px solid var(--secondBorderColor);
+}
+
+.PostList .PostList__Load
+{
+    padding-top: 20px;
+}

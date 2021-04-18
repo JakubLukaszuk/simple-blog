@@ -4,7 +4,7 @@ import { postsInRange } from '../../slices/postSlice';
 import { RootState, useAppDispatch } from '../../store';
 import { BaseButton } from '../UI/BaseButton/BaseButton';
 import PostItem from './PostItem/PostItem';
-
+import './PostList.css'
 
 const PostList =()=> {
     const dispatch = useAppDispatch();
@@ -15,17 +15,19 @@ const PostList =()=> {
     }, [])
 
     const loadMoreComments = ()=>{
-        dispatch(postsInRange( {"addPosts": true,"getArgs":{startIndex: posts.length, endIndex: posts.length+4}}))
+        if(posts.length){
+            dispatch(postsInRange( {"addPosts": true,"getArgs":{startIndex: posts.length, endIndex: posts.length+4}}))
+        }
     }
 
     return (
-        <section>
+        <section className="PostList">
             {isLoading? "Loading...":
                 <ul>
                     {posts.map(post=> (<PostItem post={post} key={post.id}/>))}
                 </ul>
             }
-            <div>
+            <div className="PostList__Load">
                 <BaseButton onClick={loadMoreComments}>
                     LoadMore
                 </BaseButton>

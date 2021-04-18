@@ -1,0 +1,12 @@
+.HandlePost{
+    display: flex;
+    flex-direction: column;
+    padding: 5px;
+    border-radius: 5px;
+    margin: 5px;
+}
+
+.HandlePost .HandlePost__Form{
+    display: flex;
+    flex-direction: column;
+}

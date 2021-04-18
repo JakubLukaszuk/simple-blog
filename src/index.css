@@ -1,3 +1,22 @@
+*{
+  margin: 0;
+  box-sizing: border-box;
+  list-style: none;
+  padding: 0;
+}
+
+:root {
+  --fontColor: #292727;
+  --secondFontColor: #EACE9F;
+  --inactiveFontColor: #8a8a8a;
+  --borderColor: #a0a0a0;
+  --secondBorderColor: #49423F;
+  --backGroundColor: #ECECEC;
+  --secondBackGroundColor: #cc9744;
+  --secondBackGroundColorGradient: linear-gradient(180deg, #cc9744 0%, #944f12 50%, #91531e 100%)
+}
+
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',

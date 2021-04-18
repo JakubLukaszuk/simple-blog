@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
-import { useSelector } from 'react-redux';
 import { addComment } from '../../../slices/postSlice';
-import { RootState, useAppDispatch } from '../../../store';
+import { useAppDispatch } from '../../../store';
 import { BaseButton } from '../../UI/BaseButton/BaseButton'
-import TextField from '../../UI/TextField/TextField'
+import TextField from '../../UI/TextField/TextField';
+import './NewComment.css'
 
 interface INewComment{
     postId: number
@@ -27,9 +27,9 @@ const NewComment : React.FC<INewComment> = (props) => {
     }
 
     return (
-        <form onSubmit={submitComment}>
-            <TextField value={userName}  onChange={setUserName}/>
-            <TextField textarea={true} value={commentText} onChange={setCommentText}/>
+        <form className="NewComment" onSubmit={submitComment}>
+            <TextField placeholder="user name" value={userName}  onChange={setUserName}/>
+            <TextField placeholder="comment" textarea={true} value={commentText} onChange={setCommentText}/>
             <BaseButton type="submit">Comment</BaseButton>
         </form>
     )

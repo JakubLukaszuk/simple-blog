@@ -1,4 +1,5 @@
 import * as React from "react";
+import './BaseButton.css';
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {}
 
@@ -11,7 +12,7 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
 export const BaseButton = (props: ButtonProps): React.ReactElement<ButtonProps> =>{
     const { children, ...rest } = props;
     return (
-        <button
+        <button className="BaseButton"
             {...rest}
         >
             {children}

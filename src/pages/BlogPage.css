@@ -1,0 +1,12 @@
+.BlogPage
+{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.BlogPage.BlogPage__PostsHandleContainer
+{
+    padding: 20px;
+}

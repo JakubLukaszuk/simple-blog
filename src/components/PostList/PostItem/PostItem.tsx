@@ -5,6 +5,7 @@ import { RootState } from "../../../store";
 import HandlePost from "../../NewPost/HandlePost";
 import { BaseButton } from "../../UI/BaseButton/BaseButton";
 import PostContent from "./PostContent/PostContent";
+import './PostItem.css';
 
 interface IPostItem{
   post: IEnchencedPost;
@@ -28,13 +29,13 @@ const PostItem: React.FC<IPostItem> = (props) => {
   }
 
   return (
-    <li>
+    <li className="PostItem">
       {isLoading ? (
         "Loading..."
       ) : (
         <React.Fragment>
           {error? <span>{error.error}</span> : null}
-          <h2>{title}</h2>
+          <h2 className="PostItem__title">{title}</h2>
           {isContentVisible? <PostContent isComments={!isEditPost} postId = {id} text={text} />: null}
           {isEditPost ?  null : <BaseButton onClick={toggleContentVisibility}>{isContentVisible? 'Hide':'Show'}</BaseButton>}
           {isLoggedIn && !isEditPost ? <BaseButton onClick={toggleIsEditPost}>Edit Post</BaseButton> : null }

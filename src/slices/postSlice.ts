@@ -232,7 +232,7 @@ export const postSlice = createSlice({
         builder.addCase(getCommentsInRange.fulfilled, (state, action) => {
             state.commentsError=undefined;
             state.areCommetsLoading= false;
-            state.comments.push(action.payload);
+            state.comments.splice(action.meta.arg.postId, state.comments[action.meta.arg.postId]?.length-1 ? state.comments[action.meta.arg.postId]?.length-1 : 0 , action.payload)
         });
         builder.addCase(getCommentsInRange.rejected, (state, action) => {
             state.commentsError = action.payload;

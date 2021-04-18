@@ -1,0 +1,9 @@
+.BaseButton{
+    color: var(--fontColor);
+    background-color: var(--secondBackGroundColor);
+    border-radius: 5px;
+    padding: 10px 15px;
+    font-weight: bold;
+    border: 1px solid var(--secondBorderColor);
+    cursor: pointer;
+}

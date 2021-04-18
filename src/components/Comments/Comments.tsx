@@ -8,6 +8,7 @@ import { RootState, useAppDispatch } from "../../store";
 import { BaseButton } from "../UI/BaseButton/BaseButton";
 import Comment from "./Comment/Comment";
 import NewComment from "./NewComment/NewComment";
+import './Comments.css'
 
 interface IComments {
   postId: number;
@@ -31,21 +32,25 @@ const Comments: React.FC<IComments> = (props) => {
   }, []);
 
   const loadMoreComments =()=>{
-    getCommentsInRange({ startIndex: comments[postId].length, endIndex: comments[postId].length+4, postId: postId })
+      debugger
+      if(comments[postId]?.length)
+      {
+        dispatch(getCommentsInRange({ startIndex: comments[postId].length, endIndex: comments[postId].length+4, postId: postId }))
+      }
   }
 
   return (
-    <section>
+    <section className="Comments">
       <h3>Comments</h3>
       <NewComment postId={postId} />
-      <ul>
+      <ul className="Comments Comments__List">
         {commentsError ? <span>{commentsError.error}</span> : null}
         {areCommetsLoading ? (
           "Loading"
         ) : (
           <React.Fragment>
             {comments[postId]?.map((postComment, index) => (
-              <li key={index}>
+              <li key={index} >
                 <Comment
                   text={postComment.text}
                   username={postComment.username}

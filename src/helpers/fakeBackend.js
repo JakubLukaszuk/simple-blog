@@ -234,7 +234,7 @@ export function configureFakeBackend() {
                     let startIndex = parseInt(urlParts[urlParts.length - 2]);
                     let endIndex = parseInt(urlParts[urlParts.length - 1]);
 
-                    if (startIndex % 1 != 0 || endIndex % 1 != 0) {
+                    if (startIndex % 1 !== 0 || endIndex % 1 !== 0) {
                         reject({
                             statusCode: 404,
                             error: 'wrong indexes'

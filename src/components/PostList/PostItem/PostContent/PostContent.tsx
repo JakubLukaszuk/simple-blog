@@ -1,6 +1,6 @@
-import React, { useState } from "react";
-import { useSelector } from "react-redux";
+import React from "react";
 import Comments from "../../../Comments/Comments";
+import './PostContent.css'
 
 interface IPostContent {
   text?: string;
@@ -12,7 +12,7 @@ const PostContent: React.FC<IPostContent> = (props) => {
   const { text,postId,isComments} = props;
 
   return (
-    <section>
+    <section className="PostContent">
         <article>
           {text}
         </article>

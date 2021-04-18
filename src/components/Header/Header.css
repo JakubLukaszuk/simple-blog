@@ -1,0 +1,14 @@
+.Header{
+    display: flex;
+    justify-content: flex-end;
+}
+
+.Header.Header__navigaiton
+{
+    margin-right: 10px;
+}
+
+.Header.Header__text    
+{
+    margin-right: 50px;
+}

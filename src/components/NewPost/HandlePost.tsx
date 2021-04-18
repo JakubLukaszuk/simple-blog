@@ -7,6 +7,7 @@ import {
 import { useAppDispatch } from "../../store";
 import { BaseButton } from "../UI/BaseButton/BaseButton";
 import TextField from "../UI/TextField/TextField";
+import './HandlePost.css';
 
 interface HandlePost {
   sendPost?: (args: IAddPost) => any;
@@ -64,10 +65,11 @@ const NewPost: React.FC<HandlePost> = (props) => {
   };
 
   return (
-    <section>
-      <form onSubmit={subbmitForm}>
-        <TextField value={postTitle} onChange={setPostTitle} />
-        <TextField value={postText} onChange={setPostText} textarea={true} />
+    <section className="HandlePost">
+      <h3>{isEditPost? "Edit Post": "AddPost"}</h3>
+      <form className="HandlePost HandlePost__Form" onSubmit={subbmitForm}>
+        <TextField placeholder="title" value={postTitle} onChange={setPostTitle} />
+        <TextField placeholder="post text" value={postText} onChange={setPostText} textarea={true} />
         <div>
           <BaseButton type="submit">
             {isEditPost ? "Update" : "Post"}

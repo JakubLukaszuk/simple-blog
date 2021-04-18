@@ -1,0 +1,13 @@
+.Comments{
+    display: flex;
+    flex-direction: column;
+}
+
+.Comments.Comments__List{
+    padding: 20px 2px 2px 2px;
+    border: 2px solid var(--backGroundColor);
+}
+
+.Comments.Comments__LoadMoreButton{
+    padding-top: 10px;
+}

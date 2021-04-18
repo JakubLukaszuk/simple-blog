@@ -1,0 +1,11 @@
+.PostItem
+{
+    padding: 8px;
+    margin: 2px;
+    border: 1px solid var(--borderColor);
+}
+
+.PostItem .PostItem__title
+{
+    padding-bottom: 8px;
+}
