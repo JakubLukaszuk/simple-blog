@@ -11,6 +11,7 @@ export interface IComment {
     text: string
     username: string
 }
+
 export interface IAddComent extends IComment { };
 
 export interface IAddPost {
@@ -131,13 +132,6 @@ const getPostsInRange = async (args: IGetPostsInRange) => {
 };
 
 const addComment = async (comment: IAddComent) => {
-
-    const user = userService.getUserData();
-
-    if (!user) {
-        return;
-    }
-
     const requestOptions = {
         method: "POST",
         headers: { 'Content-Type': 'application/json', },
@@ -146,7 +140,7 @@ const addComment = async (comment: IAddComent) => {
 
     return fetch('/posts/comment', requestOptions)
         .then(serviceCommon.handleResponse)
-        .then((data: IComment) => {
+        .then((data: Array<IComment>) => {
             return data;
         });
 };

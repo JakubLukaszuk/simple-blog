@@ -34,8 +34,8 @@ const PostItem: React.FC<IPostItem> = (props) => {
       ) : (
         <React.Fragment>
           <h2>{title}</h2>
-          {isContentVisible? <PostContent text={text} />: null}
-          {isEditPost && isContentVisible ?  null : <BaseButton onClick={toggleContentVisibility}>Show</BaseButton>}
+          {isContentVisible? <PostContent isComments={!isEditPost} postId = {id} text={text} />: null}
+          {isEditPost ?  null : <BaseButton onClick={toggleContentVisibility}>{isContentVisible? 'Hide':'Show'}</BaseButton>}
           {isLoggedIn && !isEditPost ? <BaseButton onClick={toggleIsEditPost}>Edit Post</BaseButton> : null }
           {isLoggedIn && isEditPost ? <HandlePost unmount={toggleIsEditPost} isEditPost={true} deletePost={deletePost} postId={id} updatePost={updatePost} text={text} title={title}/> : null }
         </React.Fragment>

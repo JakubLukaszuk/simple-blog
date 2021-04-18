@@ -1,5 +1,5 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { IAddPost, IDeletePost, IDeltedPost, IUpdatePost, IPost, postService, IGetPostsInRange } from '../services/postService';
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
+import { IAddPost, IDeletePost, IDeltedPost, IUpdatePost, IPost, postService, IGetPostsInRange, IGetCommentsInRange, IComment, IAddComent } from '../services/postService';
 
 export interface IEnchencedPost extends IPost {
     error: string | undefined;
@@ -10,6 +10,10 @@ interface IPostsState {
     posts: Array<IEnchencedPost>;
     isLoading: boolean;
     error: any;
+    areCommetsLoading: boolean,
+    commentsError: string | undefined
+    addCommentsError: string | undefined,
+    comments:Array<Array<IComment>>
 }
 
 const echnacePost = (posts: Array<IPost>) => {
@@ -83,17 +87,45 @@ export const deletePost = createAsyncThunk<IDeltedPost, IDeletePost, { rejectVal
         }
     });
 
+    export const addComment = createAsyncThunk<Array<IComment>, IAddComent, { rejectValue: string }>
+    ('post/comments/add', async (commentToAdd) => {
+        try {
+            const commets = await postService.addComment(commentToAdd);
+            return commets;
+        }
+        catch (err) {
+            return err;
+        }
+    });
+
+    export const getCommentsInRange = createAsyncThunk<Array<IComment>, IGetCommentsInRange, { rejectValue: string }>
+    ('post/comments/get', async (commentToAdd) => {
+        try {
+            const commets = await postService.getCommentsInRange(commentToAdd);
+            return commets;
+        }
+        catch (err) {
+            return err;
+        }
+    });
+
 const initialState: IPostsState = {
     posts: [],
     isLoading: false,
-    error: undefined
+    error: undefined,
+    areCommetsLoading: false,
+    commentsError: undefined,
+    addCommentsError: undefined,
+    comments: []
 };
 
 export const postSlice = createSlice({
     name: 'post',
     initialState,
     reducers: {
-
+        deleteCommentsFromState(state, action: PayloadAction<number>) {
+            state.comments = state.comments.filter((comment,index) => index !== action.payload)
+          },
     },
     extraReducers: (builder) => {
         builder.addCase(getPostsInRange.pending, (state) => {
@@ -171,17 +203,48 @@ export const postSlice = createSlice({
         });
         builder.addCase(updatePost.rejected, (state, action) => {
             const id = action.meta.arg.id
-            state.posts = state.posts.map(posst => {
-                if(posst.id === id)
+            state.posts = state.posts.map(post => {
+                if(post.id === id)
                 {
-                    posst.isLoading = false;
-                    posst.error = 'error';
+                    post.isLoading = false;
+                    post.error = 'error';
                 }
-                return posst;
+                return post;
             })
+        });
+
+        //commets
+        builder.addCase(getCommentsInRange.pending, (state, action) => {
+            state.areCommetsLoading= true;
+            state.commentsError=undefined;
+        });
+        builder.addCase(getCommentsInRange.fulfilled, (state, action) => {
+            state.commentsError=undefined;
+            state.areCommetsLoading= false;
+            state.comments.push(action.payload);
+        });
+        builder.addCase(getCommentsInRange.rejected, (state, action) => {
+            state.commentsError = action.error.message;
+            state.areCommetsLoading= false;
+        });
+
+
+        builder.addCase(addComment.pending, (state, action) => {
+            state.areCommetsLoading= true;
+            state.addCommentsError=undefined;
+        });
+        builder.addCase(addComment.fulfilled, (state, action) => {
+            state.commentsError=undefined;
+            state.areCommetsLoading= false;
+            state.comments.splice(action.meta.arg.postId, 0, action.payload)
+        });
+        builder.addCase(addComment.rejected, (state, action) => {
+            state.addCommentsError = action.error.message;
+            state.areCommetsLoading= false;
         });
 
     }
 });
+export const { deleteCommentsFromState } = postSlice.actions;
 
 export default postSlice.reducer;

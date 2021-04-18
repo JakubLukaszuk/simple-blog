@@ -129,7 +129,7 @@ export function configureFakeBackend() {
                     // respond 200 OK
                     resolve({
                         statusCode: 200,
-                        data: posts
+                        data: posts.slice(0, 4)
                     });
 
                     return;
@@ -192,7 +192,10 @@ export function configureFakeBackend() {
                     filtredPosts.sort((a, b) => new Date(a.additionDate) -new Date(b.additionDate));
                     posts = filtredPosts;
 
+                    console.log(comments[id]);
                     delete comments[id]
+                    console.log(comments[id]);
+
 
                     localStorage.setItem('posts', JSON.stringify(filtredPosts));
                     localStorage.setItem('comments', JSON.stringify(comments));
@@ -247,11 +250,11 @@ export function configureFakeBackend() {
 
                     if (comments[comment.postId]?.length) {
                         comments[comment.postId].push(comment);
-                        localStorage.setItem('posts', JSON.stringify(comments));
+                        localStorage.setItem('comments', JSON.stringify(comments));
 
                         resolve({
                             statusCode: 200,
-                            data: comment
+                            data: comments[comment.postId].slice(0, 4)
                         });
                         return;
                     }
@@ -262,7 +265,7 @@ export function configureFakeBackend() {
 
                     resolve({
                         statusCode: 200,
-                        data: comment
+                        data: comments[comment.postId]?.slice(0, 4)
                     });
 
                     return;
@@ -288,7 +291,7 @@ export function configureFakeBackend() {
                     reject('wrong indexes');
                 }
 
-                const commentsInRange = comments[postId].slice(startIndex, endIndex);
+                const commentsInRange = comments[postId]?.slice(startIndex, endIndex);
 
                 resolve({
                     statusCode: 200,

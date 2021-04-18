@@ -24,7 +24,7 @@ export const loginUser = createAsyncThunk<IUser, ILogin, { rejectValue: string }
         }
     })
 
-const user = userService.getUser();
+const user = userService.getUserData();
 
 const initialState: IAuthState = {
     isLoggedIn: user ? true : false,
