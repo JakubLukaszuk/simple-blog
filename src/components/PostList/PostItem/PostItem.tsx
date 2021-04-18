@@ -11,7 +11,7 @@ interface IPostItem{
 }
 
 const PostItem: React.FC<IPostItem> = (props) => {
-  const { id, isLoading, text, title } = props.post;
+  const { id, isLoading, text, title, error } = props.post;
   const [isContentVisible, setIsContentVisible] = useState(false);
   const [isEditPost, setIsEditPost] = useState(false);
 
@@ -33,6 +33,7 @@ const PostItem: React.FC<IPostItem> = (props) => {
         "Loading..."
       ) : (
         <React.Fragment>
+          {error? <span>{error.error}</span> : null}
           <h2>{title}</h2>
           {isContentVisible? <PostContent isComments={!isEditPost} postId = {id} text={text} />: null}
           {isEditPost ?  null : <BaseButton onClick={toggleContentVisibility}>{isContentVisible? 'Hide':'Show'}</BaseButton>}

@@ -62,7 +62,6 @@ export const userSlice = createSlice({
             state.isLoggedIn = true;
         })
         builder.addCase(loginUser.rejected, (state, { payload }) => {
-            debugger
             state.isLoggingIn = false;
             state.isLoggedIn = false;
             state.error = payload;

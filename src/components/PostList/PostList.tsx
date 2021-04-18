@@ -1,18 +1,22 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { useSelector } from 'react-redux';
-import { getPostsInRange } from '../../slices/postSlice';
+import { postsInRange } from '../../slices/postSlice';
 import { RootState, useAppDispatch } from '../../store';
+import { BaseButton } from '../UI/BaseButton/BaseButton';
 import PostItem from './PostItem/PostItem';
 
 
 const PostList =()=> {
     const dispatch = useAppDispatch();
-    const [postIndexes, setPostIndexes] = useState({startIndex: 0, endIndex: 4});
     const { posts, isLoading } = useSelector((state: RootState) => state.post);
-
+  
     useEffect(() => {
-        dispatch(getPostsInRange({startIndex: postIndexes.startIndex, endIndex: postIndexes.endIndex}))
+        dispatch(postsInRange({"addPosts": false, "getArgs": {startIndex: 0, endIndex: 4}}))
     }, [])
+
+    const loadMoreComments = ()=>{
+        dispatch(postsInRange( {"addPosts": true,"getArgs":{startIndex: posts.length, endIndex: posts.length+4}}))
+    }
 
     return (
         <section>
@@ -22,9 +26,9 @@ const PostList =()=> {
                 </ul>
             }
             <div>
-                <button>
+                <BaseButton onClick={loadMoreComments}>
                     LoadMore
-                </button>
+                </BaseButton>
             </div>
         </section>
     )

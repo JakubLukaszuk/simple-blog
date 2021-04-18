@@ -1,10 +1,9 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import HandlePost from "../components/NewPost/HandlePost";
-import PostContent from "../components/PostList/PostItem/PostContent/PostContent";
 import PostList from "../components/PostList/PostList";
 import { BaseButton } from "../components/UI/BaseButton/BaseButton";
-import { addPost, getPostsInRange } from "../slices/postSlice";
+import { addPost } from "../slices/postSlice";
 import { RootState } from "../store";
 
 const BlogPage = () => {

@@ -7,6 +7,12 @@ export interface IEnchencedPost extends IPost {
     isLoading: boolean;
 }
 
+interface IPostsInRange
+{
+    addPosts: boolean
+    getArgs: IGetPostsInRange
+}
+
 interface IPostsState {
     posts: Array<IEnchencedPost>;
     isLoading: boolean
@@ -39,10 +45,10 @@ const handlePostsArrayResponse = (response: IPost[] | undefined) =>{
     return echnacedPosts;
 }
 
-export const getPostsInRange = createAsyncThunk<Array<IEnchencedPost>, IGetPostsInRange, { rejectValue: IError }>
-    ('post/get', async (userName) => {
+export const postsInRange = createAsyncThunk<Array<IEnchencedPost>, IPostsInRange, { rejectValue: IError }>
+    ('post/get', async (args) => {
         try {
-            const response = await postService.getPostsInRange(userName);
+            const response = await postService.getPostsInRange(args.getArgs);
             const enchancedPosts = handlePostsArrayResponse(response);
             return enchancedPosts;
         }
@@ -129,14 +135,19 @@ export const postSlice = createSlice({
           },
     },
     extraReducers: (builder) => {
-        builder.addCase(getPostsInRange.pending, (state) => {
+        builder.addCase(postsInRange.pending, (state) => {
             state.isLoading = true;
         });
-        builder.addCase(getPostsInRange.fulfilled, (state, { payload }) => {
+        builder.addCase(postsInRange.fulfilled, (state, action) => {
             state.isLoading = false;
-            state.posts = payload;
+            if(action.meta.arg.addPosts)
+            {
+                state.posts.push(...action.payload)
+                return;
+            }
+            state.posts = action.payload;
         });
-        builder.addCase(getPostsInRange.rejected, (state, {payload}) => {
+        builder.addCase(postsInRange.rejected, (state, {payload}) => {
             state.isLoading = false;
             state.error = payload
         });
